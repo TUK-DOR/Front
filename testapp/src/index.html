@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>네이버 로그인</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
+    <script type="module">
+      // Firebase 모듈 불러오기
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+      import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+      import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+      // Firebase 구성 정보
+      const firebaseConfig = {
+        apiKey: "AIzaSyCtedm3Vmsw0NU7KhlAoaXX_12uptaIMmw",
+        authDomain: "matemate-2025.firebaseapp.com",
+        projectId: "matemate-2025",
+        storageBucket: "matemate-2025.firebasestorage.app",
+        messagingSenderId: "506478780963",
+        appId: "1:506478780963:web:c3d85d7a8fa8ee97e80796",
+        measurementId: "G-D0JVFD97FS"
+      };
+  
+      // Firebase 초기화
+      const app = initializeApp(firebaseConfig);
+      
+      // Firestore 초기화
+      const db = getFirestore(app);
+
+  
+      // Firestore에 데이터 저장 함수
+      async function saveToFirebase(data) {
+        try {
+          // Firestore의 "users" 컬렉션에 데이터 추가
+          await addDoc(collection(db, "users"), data);
+          alert("데이터가 성공적으로 저장되었습니다!");
+        } catch (error) {
+          console.error("데이터 저장 중 오류:", error);
+          alert("데이터 저장에 실패했습니다.");
+        }
+      }
+      window.saveToFirebase = saveToFirebase;
+      // testcase
+      document.addEventListener("DOMContentLoaded", () => {
+        const testData = {
+          name: "홍길동",
+          email: "hong@example.com"
+        };
+        //saveToFirebase(testData); // 필요 시 호출
+      });
+    </script>
+  </head>
+  
+  
+<body>
+
+
+  <!-- 네이버 로그인 버튼 노출 영역 -->
+  <div id="naver_id_login"></div>
+  <!-- //네이버 로그인 버튼 노출 영역 -->
+  <script type="text/javascript">
+  	var naver_id_login = new naver_id_login("IRdhyyjy1Lq2OmrUb6Lh", "https://matemate.co.kr/callback");
+  	var state = naver_id_login.getUniqState();
+  	naver_id_login.setButton("white", 2,40);
+  	naver_id_login.setDomain("https://matemate.co.kr");
+  	naver_id_login.setState(state);
+  	naver_id_login.setPopup();
+  	naver_id_login.init_naver_id_login();
+
+    // 팝업 창에서 데이터를 받을 콜백 함수
+    function handleUserData(userData) {
+      console.log("사용자 정보:", userData); // 콘솔에 사용자 정보 출력
+    }
+
+    // 팝업 창에서 호출할 수 있도록 전역 함수로 등록
+    window.handleUserData = handleUserData;
+  </script>
+  로그인 후 사용자 정보를 확인하려면 콘솔을 확인하세요.<br>
+    <h1>사용자 정보 입력</h1>
+    <form id = "userForm" action="/submit" method="POST">
+        <!-- 닉네임 -->
+        <label for="nickname">닉네임:</label>
+        <input type="text" id="nickname" name="nickname" required>
+        <br><br>
+
+        <!-- 출생년도 -->
+        <label for="birthYear">출생년도:</label>
+        <input type="text" id="birthYear" name="birthYear" placeholder="예: 2000" required>
+        <br><br>
+
+        <!-- 학과 -->
+        <label for="department">학과:</label>
+        <select id="department" name="department" required>
+            <option value="">선택하세요</option>
+            <option value="컴퓨터공학과">컴퓨터공학과</option>
+            <option value="전자공학과">전자공학과</option>
+            <option value="경영학과">경영학과</option>
+            <option value="심리학과">심리학과</option>
+            <option value="기타">기타</option>
+        </select>
+        <br><br>
+
+        <!-- 성별 -->
+        <label>성별:</label>
+        <input type="radio" id="male" name="gender" value="남자" required>
+        <label for="male">남자</label>
+        <input type="radio" id="female" name="gender" value="여자">
+        <label for="female">여자</label>
+        <br><br>
+
+        <!-- MBTI -->
+        <label for="mbti">MBTI:</label>
+        <input type="text" id="mbti" name="mbti" placeholder="예: INFJ">
+        <br><br>
+
+        <!-- 취미 -->
+        <label for="hobby">취미:</label>
+        <input type="text" id="hobby" name="hobby">
+        <br><br>
+
+        <!-- 살고싶은 기숙사 건물 -->
+        <label>살고 싶은 기숙사 건물:</label>
+        <input type="radio" id="tip" name="dormitory" value="TIP 생활관" required>
+        <label for="tip">TIP 생활관</label>
+        <input type="radio" id="second" name="dormitory" value="제 2생활관">
+        <label for="second">제 2생활관</label>
+        <br><br>
+
+        <!-- 흡연 여부 -->
+        <label>흡연 여부:</label>
+        <input type="radio" id="smoke_yes" name="smoking" value="흡연" required>
+        <label for="smoke_yes">흡연</label>
+        <input type="radio" id="smoke_no" name="smoking" value="비흡연">
+        <label for="smoke_no">비흡연</label>
+        <br><br>
+
+        <!-- 취침 시간 -->
+        <label>취침 시간:</label>
+        <input type="radio" id="before" name="sleepTime" value="이전" required>
+        <label for="before">이전</label>
+        <input type="radio" id="22-23" name="sleepTime" value="22시~23시">
+        <label for="22-23">22시~23시</label>
+        <input type="radio" id="24-1" name="sleepTime" value="24시~1시">
+        <label for="24-1">24시~1시</label>
+        <input type="radio" id="2-3" name="sleepTime" value="2시~3시">
+        <label for="2-3">2시~3시</label>
+        <input type="radio" id="after" name="sleepTime" value="이후">
+        <label for="after">이후</label>
+        <br><br>
+
+        <!-- 기상 시간 -->
+        <label>기상 시간:</label>
+        <input type="radio" id="wake_before" name="wakeTime" value="이전" required>
+        <label for="wake_before">이전</label>
+        <input type="radio" id="6-7" name="wakeTime" value="6시~7시">
+        <label for="6-7">6시~7시</label>
+        <input type="radio" id="8-9" name="wakeTime" value="8시~9시">
+        <label for="8-9">8시~9시</label>
+        <input type="radio" id="10-11" name="wakeTime" value="10시~11시">
+        <label for="10-11">10시~11시</label>
+        <input type="radio" id="wake_after" name="wakeTime" value="이후">
+        <label for="wake_after">이후</label>
+        <br><br>
+
+        <!-- 배달 빈도 -->
+        <label>배달 빈도:</label>
+        <input type="radio" id="delivery_0" name="deliveryFrequency" value="주0회" required>
+        <label for="delivery_0">주0회</label>
+        <input type="radio" id="delivery_1-3" name="deliveryFrequency" value="주1~3회">
+        <label for="delivery_1-3">주1~3회</label>
+        <input type="radio" id="delivery_5+" name="deliveryFrequency" value="주5회 이상">
+        <label for="delivery_5+">주5회 이상</label>
+        <br><br>
+
+        <!-- 배달 시간 -->
+        <label>배달 시간:</label>
+        <input type="radio" id="no_delivery" name="deliveryTime" value="없음" required>
+        <label for="no_delivery">없음</label>
+        <input type="radio" id="0-4" name="deliveryTime" value="0~4시">
+        <label for="0-4">0~4시</label>
+        <input type="radio" id="5-9" name="deliveryTime" value="5~9시">
+        <label for="5-9">5~9시</label>
+        <input type="radio" id="10-14" name="deliveryTime" value="10~14시">
+        <label for="10-14">10~14시</label>
+        <input type="radio" id="15-19" name="deliveryTime" value="15~19시">
+        <label for="15-19">15~19시</label>
+        <input type="radio" id="20-23" name="deliveryTime" value="20~23시">
+        <label for="20-23">20~23시</label>
+        <br><br>
+
+        <!-- 방 안 식사 여부 -->
+        <label>방 안 식사 여부:</label>
+        <input type="radio" id="eat_in" name="eatInRoom" value="방 안 식사" required>
+        <label for="eat_in">방 안 식사</label>
+        <input type="radio" id="no_eat_in" name="eatInRoom" value="방 안 식사X">
+        <label for="no_eat_in">방 안 식사X</label>
+        <br><br>
+
+        <!-- 샤워 시간 -->
+        <label>샤워 시간:</label>
+        <label>시간대:</label>
+        <input type="radio" id="shower_morning" name="showerTime" value="아침" required>
+        <label for="shower_morning">아침</label>
+        <input type="radio" id="shower_afternoon" name="showerTime" value="점심">
+        <label for="shower_afternoon">점심</label>
+        <input type="radio" id="shower_evening" name="showerTime" value="저녁">
+        <label for="shower_evening">저녁</label>
+        <br>
+        <label>시간 길이:</label>
+        <input type="radio" id="shower_10" name="showerDuration" value="10분" required>
+        <label for="shower_10">10분</label>
+        <input type="radio" id="shower_30" name="showerDuration" value="30분">
+        <label for="shower_30">30분</label>
+        <input type="radio" id="shower_60" name="showerDuration" value="60분">
+        <label for="shower_60">60분</label>
+        <br><br>
+
+        <!-- 게임 여부 -->
+        <label>게임 여부:</label>
+        <input type="radio" id="game_yes" name="game" value="게임을 한다" required>
+        <label for="game_yes">게임을 한다</label>
+        <input type="radio" id="game_no" name="game" value="게임을 안 한다">
+        <label for="game_no">게임을 안 한다</label>
+        <input type="radio" id="game_sometimes" name="game" value="게임을 가끔 한다">
+        <label for="game_sometimes">게임을 가끔 한다</label>
+        <br><br>
+
+        <!-- 소음 정도 -->
+        <label>나의 소음 정도:</label>
+        <input type="radio" id="noise_small" name="noiseLevel" value="작음" required>
+        <label for="noise_small">작음</label>
+        <input type="radio" id="noise_medium" name="noiseLevel" value="중간">
+        <label for="noise_medium">중간</label>
+        <input type="radio" id="noise_large" name="noiseLevel" value="큼">
+        <label for="noise_large">큼</label>
+        <br><br>
+
+        <!-- 디스코드 여부 -->
+        <label>디스코드 여부:</label>
+        <input type="radio" id="discord_yes" name="discord" value="한다" required>
+        <label for="discord_yes">한다</label>
+        <input type="radio" id="discord_no" name="discord" value="안 한다">
+        <label for="discord_no">안 한다</label>
+        <input type="radio" id="discord_sometimes" name="discord" value="가끔 한다">
+        <label for="discord_sometimes">가끔 한다</label>
+        <br><br>
+
+        <!-- 잠귀 레벨 -->
+        <label>나의 잠귀 레벨:</label>
+        <input type="radio" id="sleep_light" name="sleepSensitivity" value="잠귀가 밝다" required>
+        <label for="sleep_light">잠귀가 밝다</label>
+        <input type="radio" id="sleep_dark" name="sleepSensitivity" value="잠귀가 어둡다">
+        <label for="sleep_dark">잠귀가 어둡다</label>
+        <input type="radio" id="sleep_other" name="sleepSensitivity" value="기타">
+        <label for="sleep_other">기타</label>
+        <br><br>
+
+        <!-- 공부 장소 -->
+        <label>공부할 때 어디에서 하나요:</label>
+        <input type="radio" id="study_room" name="studyPlace" value="기숙사 방에서" required>
+        <label for="study_room">기숙사 방에서</label>
+        <input type="radio" id="study_out" name="studyPlace" value="기숙사 방 밖에서">
+        <label for="study_out">기숙사 방 밖에서</label>
+        <input type="radio" id="study_other" name="studyPlace" value="기타">
+        <label for="study_other">기타</label>
+        <br><br>
+
+        <!-- 벌레 잡기 여부 -->
+        <label>벌레를 잡을 수 있나요:</label>
+        <input type="radio" id="bug_all" name="bugCatching" value="모든 벌레를 잡을 수 있다" required>
+        <label for="bug_all">모든 벌레를 잡을 수 있다</label>
+        <input type="radio" id="bug_none" name="bugCatching" value="모든 벌레를 잡을 수 없다">
+        <label for="bug_none">모든 벌레를 잡을 수 없다</label>
+        <input type="radio" id="bug_small" name="bugCatching" value="작은 벌레만 잡을 수 있다">
+        <label for="bug_small">작은 벌레만 잡을 수 있다</label>
+        <input type="radio" id="bug_big" name="bugCatching" value="큰 벌레만 잡을 수 있다">
+        <label for="bug_big">큰 벌레만 잡을 수 있다</label>
+        <input type="radio" id="bug_other" name="bugCatching" value="기타">
+        <label for="bug_other">기타</label>
+        <br><br>
+
+        <!-- 제출 버튼 -->
+        <button type="submit">제출</button>
+    </form>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form"); // 폼 선택
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault(); // 기본 폼 제출 동작 방지
+
+    // 폼 데이터 수집
+    const formData = new FormData(form); // FormData 객체 생성
+    const data = {};
+
+    // FormData를 순회하며 데이터를 객체로 변환
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    // 수집된 데이터 확인
+    console.log("수집된 폼 데이터:", data);
+
+    // 데이터베이스 저장 로직 추가 (예: Firebase 사용)
+    saveToFirebase(data);
+    
+  });
+});
+    </script>
+</body>
+</html>

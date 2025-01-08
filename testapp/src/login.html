@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학교 이메일 로그인</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #357ae8;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>학교 이메일 로그인</h2>
+        <p>Google 계정을 사용하여 로그인하세요.</p>
+        <button id="google-login-btn">Google로 로그인</button>
+        <p class="error" id="error-message"></p>
+    </div>
+
+    <script type="module">
+        // Firebase 모듈 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+        // Firebase 구성
+        const firebaseConfig = {
+            apiKey: "AIzaSyCtedm3Vmsw0NU7KhlAoaXX_12uptaIMmw",
+            authDomain: "matemate-2025.firebaseapp.com",
+            projectId: "matemate-2025",
+            storageBucket: "matemate-2025.appspot.com",
+            messagingSenderId: "506478780963",
+            appId: "1:506478780963:web:c3d85d7a8fa8ee97e80796",
+            measurementId: "G-D0JVFD97FS"
+        };
+
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // 허용된 이메일 도메인
+        const allowedDomain = "@tukorea.ac.kr"; // 학교 이메일 도메인
+
+        // Google 로그인 함수
+        const signInWithGoogle = async () => {
+            const errorMessageElement = document.getElementById("error-message");
+            errorMessageElement.textContent = ""; // 오류 메시지 초기화
+
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                // 이메일 도메인 검증
+                if (!user.email.endsWith(allowedDomain)) {
+                    // 허용되지 않은 도메인일 경우 로그아웃 처리
+                    await signOut(auth);
+                    throw new Error(`허용된 이메일 도메인(${allowedDomain})이 아닙니다.`);
+                }
+
+                // 성공적으로 로그인한 경우
+                alert(`환영합니다, ${user.displayName}!`);
+                console.log("로그인 성공:", user);
+
+                // 예: 로그인 후 다른 페이지로 리디렉션
+                // window.location.href = "/dashboard.html";
+
+            } catch (error) {
+                if (error.message.includes("-47")) {
+                    console.error("로그인 오류:", error);
+                    errorMessageElement.textContent = "인증에 실패했습니다. 학교 이메일로 로그인하세요.";
+                    return;
+                }
+                console.error("로그인 오류:", error);
+                errorMessageElement.textContent = error.message;
+            }
+        };
+
+        // 버튼 클릭 이벤트 리스너
+        document.getElementById("google-login-btn").addEventListener("click", signInWithGoogle);
+    </script>
+</body>
+</html>
